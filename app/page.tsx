@@ -51,31 +51,7 @@ function HeroSection() {
       id="home"
       className="relative min-h-screen flex items-center overflow-hidden pt-16"
     >
-      {/* Video Background */}
-      <div className="absolute inset-0 w-full h-full z-0">
-        <video
-          ref={videoRef}
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover"
-        >
-          <source
-            src="/videos/bg.mp4"
-            type="video/mp4"
-          />
-          {/* Fallback image if video doesn't load */}
-          <img
-            src="/videos/bg.mp4"
-            alt="Sports background"
-            className="w-full h-full object-cover"
-          />
-        </video>
-        {/* Dark overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-black/70" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/50" />
-      </div>
+      
 
       {/* Background glow effects */}
       <div className="absolute top-1/4 right-0 w-96 h-96 bg-red-600/10 rounded-full blur-3xl z-0" />
