@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Navbar from '@/components/Navbar';
 import JoinSection from '@/components/JoinSection';
 import ContactSection from '@/components/ContactSection';
@@ -22,56 +22,104 @@ import {
   Shield,
   Award,
   ChevronLeft,
+  Play,
+  Pause,
 } from 'lucide-react';
 
-/* ─── Hero ─────────────────────────────────────────────────── */
+/* ─── Hero with Video Background ─────────────────────────────────────────────────── */
 function HeroSection() {
   const scroll = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const [isPlaying, setIsPlaying] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const togglePlay = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
   return (
     <section
       id="home"
-      className="relative min-h-screen bg-black flex items-center overflow-hidden pt-16"
+      className="relative min-h-screen flex items-center overflow-hidden pt-16"
     >
-      {/* Background overlay glow */}
-      <div className="absolute inset-0 bg-gradient-to-br from-red-950/30 via-black to-black" />
-      <div className="absolute top-1/4 right-0 w-96 h-96 bg-red-600/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-1/4 w-64 h-64 bg-red-600/10 rounded-full blur-3xl" />
+      {/* Video Background */}
+      <div className="absolute inset-0 w-full h-full z-0">
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover"
+        >
+          <source
+            src="bg.mp4.mp4"
+            type="video/mp4"
+          />
+          {/* Fallback image if video doesn't load */}
+          <img
+            src="https://images.pexels.com/photos/3657154/pexels-photo-3657154.jpeg?auto=compress&cs=tinysrgb&w=600"
+            alt="Sports background"
+            className="w-full h-full object-cover"
+          />
+        </video>
+        {/* Dark overlay for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-black/70" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/50" />
+      </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-12 sm:py-20">
+      {/* Background glow effects */}
+      <div className="absolute top-1/4 right-0 w-96 h-96 bg-red-600/10 rounded-full blur-3xl z-0" />
+      <div className="absolute bottom-0 left-1/4 w-64 h-64 bg-red-600/15 rounded-full blur-3xl z-0" />
+
+      {/* Video Control Button */}
+      <button
+        onClick={togglePlay}
+        className="absolute bottom-8 right-8 z-20 bg-black/50 backdrop-blur-sm text-white p-3 rounded-full hover:bg-red-600/80 transition-all duration-300 hover:scale-110"
+        aria-label={isPlaying ? 'Pause video' : 'Play video'}
+      >
+        {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+      </button>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-8 sm:py-12">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Left */}
           <div className="text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 bg-red-600/10 border border-red-600/30 rounded-full px-3 sm:px-4 py-1.5 sm:py-2 mb-6 sm:mb-8 mx-auto lg:mx-0 w-fit">
+            <div className="inline-flex items-center gap-2 bg-red-600/20 backdrop-blur-sm border border-red-600/30 rounded-full px-3 sm:px-4 py-1.5 sm:py-2 mb-4 sm:mb-6 mx-auto lg:mx-0 w-fit">
               <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-red-500 rounded-full animate-pulse" />
               <span className="text-red-400 text-xs sm:text-sm font-medium">Now Enrolling — 2026 Season</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight sm:leading-none mb-4 sm:mb-6">
-              Where Passion
-              <br />
-              Meets
+              Potential Becomes
               <br />
               <span className="text-red-500">Performance</span>
             </h1>
 
-            <p className="text-gray-400 text-base sm:text-lg leading-relaxed mb-8 sm:mb-10 max-w-lg mx-auto lg:mx-0">
+            <p className="text-gray-300 text-base sm:text-lg leading-relaxed mb-6 sm:mb-8 max-w-lg mx-auto lg:mx-0 backdrop-blur-sm bg-black/20 p-4 rounded-xl">
               Elite coaching, performance analytics, and 360° training programs across Cricket, Football, Basketball &amp; Taekwondo.
             </p>
 
             <div className="flex flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start">
               <button
                 onClick={() => scroll('join')}
-                className="bg-red-600 hover:bg-red-700 text-white font-semibold px-5 sm:px-7 py-2.5 sm:py-3.5 rounded-full flex items-center gap-2 transition-all duration-200 shadow-lg shadow-red-900/40 text-sm sm:text-base"
+                className="bg-red-600 hover:bg-red-700 text-white font-semibold px-5 sm:px-7 py-2.5 sm:py-3.5 rounded-full flex items-center gap-2 transition-all duration-200 shadow-lg shadow-red-900/40 text-sm sm:text-base hover:shadow-red-600/40 hover:scale-105 transform"
               >
                 <Zap className="w-4 h-4" />
                 Join Now
               </button>
               <button
                 onClick={() => scroll('programs')}
-                className="border border-white/30 hover:border-red-500 text-white hover:text-red-400 font-semibold px-5 sm:px-7 py-2.5 sm:py-3.5 rounded-full flex items-center gap-2 transition-all duration-200 text-sm sm:text-base"
+                className="border border-white/40 backdrop-blur-sm bg-white/5 hover:bg-white/10 text-white hover:text-red-400 font-semibold px-5 sm:px-7 py-2.5 sm:py-3.5 rounded-full flex items-center gap-2 transition-all duration-200 text-sm sm:text-base hover:border-red-500"
               >
                 View Programs <ArrowRight className="w-4 h-4" />
               </button>
@@ -79,7 +127,7 @@ function HeroSection() {
           </div>
 
           {/* Right — Animated counter cards */}
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 mt-8 lg:mt-0">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 mt-6 lg:mt-0">
             <AnimatedCounter
               end={20000}
               suffix="+"
@@ -125,19 +173,19 @@ function AboutSection() {
   ];
 
   return (
-    <section id="about" className="bg-gray-950 py-16 sm:py-20 lg:py-28">
+    <section id="about" className="bg-gray-950 py-12 lg:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div className="text-center lg:text-left">
             <span className="text-red-500 text-xs sm:text-sm font-semibold tracking-widest uppercase">About Us</span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mt-3 mb-4 sm:mb-6">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mt-2 mb-3 sm:mb-4">
               Built by Champions, <br />
               <span className="text-red-500">For Champions</span>
             </h2>
-            <p className="text-gray-400 text-sm sm:text-base leading-relaxed mb-4 sm:mb-6">
+            <p className="text-gray-400 text-sm sm:text-base leading-relaxed mb-3 sm:mb-4">
               Founded in 2009, Shadow Striker United has grown from a single training pitch to a full multi-sport performance academy. We combine elite-level expertise with cutting-edge technology to unlock every athlete's potential.
             </p>
-            <p className="text-gray-400 text-sm sm:text-base leading-relaxed mb-6 sm:mb-8">
+            <p className="text-gray-400 text-sm sm:text-base leading-relaxed mb-4 sm:mb-6">
               Our coaches are former professionals who understand what it takes to win at the highest level. Every program is designed to challenge, inspire, and elevate.
             </p>
             <button
@@ -324,6 +372,12 @@ function ProgramsSection() {
       levels: ['White Belt', 'Color Belt', 'Black Belt'],
       desc: 'Discipline, flexibility, self-defence, and competition sparring.',
     },
+    {
+      sport: 'Skating',
+      img: 'https://images.pexels.com/photos/274839/pexels-photo-274839.jpeg?auto=compress&cs=tinysrgb&w=600',
+      levels: ['Beginner', 'Intermediate', 'Advanced'],
+      desc: 'Balance, speed control, turns, and tricks development with professional coaching.',
+    },
   ];
 
   const renderProgram = (program: any) => (
@@ -356,11 +410,11 @@ function ProgramsSection() {
   );
 
   return (
-    <section id="programs" className="bg-black py-16 sm:py-20 lg:py-28">
+    <section id="programs" className="bg-black py-12 lg:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10 sm:mb-14">
+        <div className="text-center mb-6 sm:mb-8">
           <span className="text-red-500 text-xs sm:text-sm font-semibold tracking-widest uppercase">Programs</span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mt-3 mb-3 sm:mb-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mt-2 mb-2 sm:mb-3">
             Train in Your <span className="text-red-500">Sport</span>
           </h2>
           <p className="text-gray-400 text-sm sm:text-base max-w-xl mx-auto px-4">
@@ -411,6 +465,41 @@ function CoachesSection() {
       img: 'https://i.ibb.co/xqTxjLKr/Whats-App-Image-2026-06-04-at-4-15-40-PM.jpg',
       bio: 'Former national-level basketball player with 15+ years of coaching experience, dedicated to building skilled, disciplined, and high-performance athletes.',
     },
+    {
+      name: 'Mr. AJAY KUMAR SINGH',
+      sport: 'SENIOR COACH',
+      exp: '20 yrs',
+      img: 'https://i.ibb.co/mV6862H9/Whats-App-Image-2026-06-08-at-10-37-17-AM.jpg',
+      bio: 'Experienced FIFA B Licensed Coach with over 20 years of developing players and leading teams to success.',
+    },
+    {
+      name: 'Mr. RAVIKANT THAKUR',
+      sport: 'SENIOR SKATING COACH',
+      exp: '20 yrs',
+      img: 'https://i.ibb.co/qL7PPz4d/image-removebg-preview-8.png',
+      bio: 'Secretary, Rollball Association, G.B. Nagar | 20+ years of professional coaching experience in skating & rollball',
+    },
+    {
+      name: 'Mr. AAKASH MOURYA',
+      sport: 'ASST. COACH',
+      exp: '5 yrs',
+      img: 'https://i.ibb.co/j98mvfJs/Whats-App-Image-2026-06-04-at-4-15-42-PM.jpg',
+      bio: 'Playing for Delhi University.',
+    },
+    {
+      name: 'Ms. INDERJEET',
+      sport: 'ASST. COACH',
+      exp: '5 yrs',
+      img: 'https://i.ibb.co/ZR2DJbCV/Whats-App-Image-2026-06-04-at-4-15-42-PM-1.jpg',
+      bio: 'Playing for Delhi University.',
+    },
+    {
+      name: 'Ms. VIKKI GAUTAM ',
+      sport: 'SKATING, rollball',
+      exp: '6 yrs',
+      img: 'https://i.ibb.co/gbJWfgKV/Whats-App-Image-2026-07-11-at-9-11-56-AM.jpg',
+      bio: 'Asst coach g b nagar district 6 years of Experience',
+    },
   ];
 
   const renderCoach = (coach: any) => (
@@ -438,11 +527,11 @@ function CoachesSection() {
   );
 
   return (
-    <section id="coaches" className="bg-gray-950 py-16 sm:py-20 lg:py-28">
+    <section id="coaches" className="bg-gray-950 py-12 lg:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10 sm:mb-14">
+        <div className="text-center mb-6 sm:mb-8">
           <span className="text-red-500 text-xs sm:text-sm font-semibold tracking-widest uppercase">Coaches</span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mt-3 mb-3 sm:mb-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mt-2">
             Learn From the <span className="text-red-500">Best</span>
           </h2>
         </div>
@@ -477,11 +566,11 @@ function AchievementsSection() {
   };
 
   return (
-    <section id="achievements" className="bg-black py-16 sm:py-20 lg:py-28">
+    <section id="achievements" className="bg-black py-12 lg:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10 sm:mb-14">
+        <div className="text-center mb-6 sm:mb-8">
           <span className="text-red-500 text-xs sm:text-sm font-semibold tracking-widest uppercase">Achievements</span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mt-3 mb-3 sm:mb-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mt-2 mb-2 sm:mb-3">
             Our Trophy <span className="text-red-500">Cabinet</span>
           </h2>
           <p className="text-gray-400 text-sm sm:text-base max-w-xl mx-auto px-4">
@@ -516,92 +605,96 @@ function AchievementsSection() {
   );
 }
 
-/* ─── Blog Section with Carousel ───────────────────────────────────────────────── */
+/* ─── Blog Section with Gallery ───────────────────────────────────────────────── */
 function BlogSection() {
-  const posts = [
-    {
-      category: 'Cricket',
-      date: 'May 28, 2024',
-      title: '5 Batting Techniques That Separate Good from Great',
-      excerpt: 'The difference between a competent batsman and an elite striker often comes down to these key mechanics.',
-      img: 'https://images.pexels.com/photos/3657154/pexels-photo-3657154.jpeg?auto=compress&cs=tinysrgb&w=600',
-      read: '5 min read',
-    },
-    {
-      category: 'Football',
-      date: 'May 20, 2024',
-      title: 'The Science of Speed: Explosive Acceleration Training',
-      excerpt: 'How modern sports science has revolutionised the way we train footballers for maximum velocity.',
-      img: 'https://images.pexels.com/photos/46798/the-ball-stadion-football-the-pitch-46798.jpeg?auto=compress&cs=tinysrgb&w=600',
-      read: '7 min read',
-    },
-    {
-      category: 'Taekwondo',
-      date: 'May 14, 2024',
-      title: 'Mental Toughness: The Hidden Weapon in Martial Arts',
-      excerpt: 'Discipline and psychological resilience are what truly distinguish champions in competitive taekwondo.',
-      img: 'https://images.pexels.com/photos/7045585/pexels-photo-7045585.jpeg?auto=compress&cs=tinysrgb&w=600',
-      read: '6 min read',
-    },
-    {
-      category: 'Basketball',
-      date: 'May 10, 2024',
-      title: 'Elite Footwork: The Foundation of Great Defense',
-      excerpt: 'How defensive slides, closeouts, and positioning can make you an unstoppable force on the court.',
-      img: 'https://images.pexels.com/photos/1752757/pexels-photo-1752757.jpeg?auto=compress&cs=tinysrgb&w=600',
-      read: '8 min read',
-    },
+  const [showAll, setShowAll] = useState(false);
+  
+  const images = [
+    'https://i.ibb.co/gbzNwWzH/image.jpg',
+    'https://i.ibb.co/bg4ZH54P/e8e48de2-92e1-4a15-8b8a-7553593b6d4e.png',
+    'https://i.ibb.co/Lz6Mp85L/6343d037-2725-4743-829e-b3e43fa2a4c8.png',
+    'https://i.ibb.co/5hLc5G2v/Whats-App-Image-2026-06-08-at-11-31-17-AM.jpg',
+    'https://i.ibb.co/dw5j9b71/f3116b28-7afd-4cd8-8efe-0f294c005004.png',
+    'https://i.ibb.co/DDx3QZ9S/88dc83e0-9062-454d-bc20-1d5087449bf0.png',
+    'https://i.ibb.co/bMKN7K8T/3fa885bc-6c0c-40b9-b045-f6bfee9c9b56.png',
+    'https://i.ibb.co/HDKrNchr/1691ffa3-389e-4891-808c-e5b9d9a9580f.png',
+    'https://i.ibb.co/jkBPTmGk/df2aa72a-e721-4e52-9cbc-9fb6cb4123ab.png',
+    'https://i.ibb.co/Wp3QVF4j/23ccb148-4983-4931-83ae-eed6e8d9ed3a.png',
+    'https://i.ibb.co/v6bGj7dq/cb5ef784-1aa5-492b-a1c6-64e59d66ce56.png',
+    'https://i.ibb.co/wh5BJzL6/69b9ca85-aec2-4db5-889c-e17af93baccd.png',
+    'https://i.ibb.co/8n1J112q/b30597aa-b839-48ba-9e01-8bacd4b1ae15.png',
+    'https://i.ibb.co/VYScp5CY/61d475f0-0b1c-49d9-8f0b-6c185f1f4d53.png',
+    'https://i.ibb.co/6R7xG9St/e2091a93-95c1-47b9-9cfd-556fe3a3917b.png',
+    'https://i.ibb.co/zVNRkrTt/e106f4f1-04d5-4a54-979e-2ee2c6b853b7.png',
+    
   ];
 
-  const renderPost = (post: any) => (
-    <article className="bg-gray-900 border border-gray-800 rounded-xl sm:rounded-2xl overflow-hidden hover:border-red-600/50 transition-all duration-300 group cursor-pointer h-full flex flex-col">
-      <div className="relative h-40 sm:h-48 overflow-hidden">
-        <img
-          src={post.img}
-          alt={post.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-        />
-        <div className="absolute top-2 sm:top-3 left-2 sm:left-3">
-          <span className="bg-red-600 text-white text-xs font-semibold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full">
-            {post.category}
-          </span>
-        </div>
-      </div>
-      <div className="p-4 sm:p-5 flex-1 flex flex-col">
-        <div className="flex items-center justify-between mb-2 sm:mb-3">
-          <span className="text-gray-500 text-xs">{post.date}</span>
-          <span className="text-gray-600 text-xs">{post.read}</span>
-        </div>
-        <h3 className="text-white font-bold text-sm sm:text-base leading-snug mb-2 group-hover:text-red-400 transition-colors">
-          {post.title}
-        </h3>
-        <p className="text-gray-400 text-xs sm:text-sm leading-relaxed flex-1">{post.excerpt}</p>
-      </div>
-    </article>
-  );
+  const initialDisplayCount = 8;
+  const displayedImages = showAll ? images : images.slice(0, initialDisplayCount);
 
   return (
-    <section id="blog" className="bg-gray-950 py-16 sm:py-20 lg:py-28">
+    <section id="blog" className="bg-gray-950 py-12 lg:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-14">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-4 sm:mb-6">
           <div className="text-center sm:text-left">
-            <span className="text-red-500 text-xs sm:text-sm font-semibold tracking-widest uppercase">Blog</span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mt-3">
-              Latest <span className="text-red-500">Insights</span>
+            <span className="text-red-500 text-xs sm:text-sm font-semibold tracking-widest uppercase">Gallery</span>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mt-2">
+              Sports <span className="text-red-500">Moments</span>
             </h2>
           </div>
-          <a href="#" className="text-red-400 hover:text-red-300 text-xs sm:text-sm font-medium flex items-center gap-1 transition-colors justify-center sm:justify-start">
-            View all posts <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
-          </a>
+          <span className="text-gray-500 text-sm">
+            {displayedImages.length} of {images.length} photos
+          </span>
         </div>
 
-        <Carousel 
-          items={posts} 
-          renderItem={renderPost} 
-          itemsPerView={3}
-          autoSlide={true}
-          slideInterval={4500}
-        />
+        {/* Gallery Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
+          {displayedImages.map((img, index) => (
+            <div
+              key={index}
+              className="relative aspect-square overflow-hidden rounded-lg sm:rounded-xl group cursor-pointer"
+            >
+              <img
+                src={img}
+                alt={`Sports moment ${index + 1}`}
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <span className="text-[10px] sm:text-xs font-medium bg-red-600 px-2 py-0.5 rounded-full">
+                  #{index + 1}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Show More Button */}
+        {images.length > initialDisplayCount && (
+          <div className="flex justify-center mt-6 sm:mt-8">
+            <button
+              onClick={() => setShowAll(!showAll)}
+              className="group relative inline-flex items-center gap-2 px-6 sm:px-8 py-2 sm:py-2.5 bg-transparent border-2 border-red-600 text-red-500 font-semibold text-sm sm:text-base rounded-full hover:bg-red-600 hover:text-white transition-all duration-300"
+            >
+              <span>{showAll ? 'Show Less' : 'Show More'}</span>
+              <svg
+                className={`w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-300 ${
+                  showAll ? 'rotate-180' : ''
+                }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );
@@ -631,11 +724,11 @@ function TestimonialsSection() {
   ];
 
   return (
-    <section className="bg-black py-16 sm:py-20 lg:py-24">
+    <section className="bg-black py-12 lg:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10 sm:mb-14">
+        <div className="text-center mb-6 sm:mb-8">
           <span className="text-red-500 text-xs sm:text-sm font-semibold tracking-widest uppercase">Testimonials</span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mt-3">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mt-2">
             What Our <span className="text-red-500">Athletes</span> Say
           </h2>
         </div>

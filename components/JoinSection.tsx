@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Check, Zap, Shield, Star, Users, ChevronRight, CheckCircle } from 'lucide-react';
+import { Check, Zap, Shield, Star, Users, ChevronRight, CheckCircle, MessageCircle } from 'lucide-react';
 
 const plans = [
   {
@@ -22,7 +22,7 @@ const plans = [
   {
     name: 'Elite',
     price: '19999',
-    period: 'month',
+    period: 'Yearly',
     description: 'Our most popular plan for serious athletes',
     features: [
       '5 training sessions per week',
@@ -81,10 +81,51 @@ export default function JoinSection() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    // Create WhatsApp message with all form details
+    const message = `*🏆 NEW MEMBERSHIP REGISTRATION* 🏆%0A%0A
+*━━━━━━━━━━━━━━━━━━━━*%0A
+*📋 MEMBER DETAILS*%0A
+*━━━━━━━━━━━━━━━━━━━━*%0A
+*👤 Name:* ${formData.name}%0A
+*📧 Email:* ${formData.email}%0A
+*📞 Phone:* ${formData.phone}%0A
+*🎂 Age:* ${formData.age || 'Not provided'}%0A
+*🏅 Sport:* ${formData.sport || 'Not selected'}%0A
+*💎 Plan:* ${formData.plan}%0A%0A
+
+*━━━━━━━━━━━━━━━━━━━━*%0A
+*💰 PLAN DETAILS*%0A
+*━━━━━━━━━━━━━━━━━━━━*%0A${
+      formData.plan === 'Starter' ? '• Price: ₹2,000/3 days\n• Sessions: 2 per week\n• Sport: 1 program' :
+      formData.plan === 'Elite' ? '• Price: ₹19,999/month\n• Sessions: 5 per week\n• Personal coaching: 2/month' :
+      '• Price: ₹4,000/6 days\n• Sessions: Unlimited\n• Dedicated coach'
+    }%0A%0A
+
+*━━━━━━━━━━━━━━━━━━━━*%0A
+*⏰ TIMESTAMP*%0A
+*━━━━━━━━━━━━━━━━━━━━*%0A
+*📅 Date:* ${new Date().toLocaleDateString('en-IN')}%0A
+*🕐 Time:* ${new Date().toLocaleTimeString('en-IN')}%0A%0A
+
+*🔴 SHADOW STRIKERS UNITED* 🔴
+*_Where Passion Meets Performance_*`;
+
+    // Your WhatsApp number (with country code, no plus sign or spaces)
+    const phoneNumber = '919540879700'; // Change this to your WhatsApp number
+    
+    // Create WhatsApp link
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+    
+    // Open WhatsApp in new tab
+    window.open(whatsappUrl, '_blank');
+    
+    // Show success message
     setTimeout(() => {
       setLoading(false);
       setSubmitted(true);
-    }, 1400);
+      // Don't reset form data so user can see what they submitted
+    }, 800);
   };
 
   return (
@@ -177,19 +218,24 @@ export default function JoinSection() {
             <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8">
               {submitted ? (
                 <div className="text-center py-10">
-                  <div className="bg-red-600/20 border border-red-600/30 rounded-full p-4 w-fit mx-auto mb-5">
-                    <CheckCircle className="w-10 h-10 text-red-500" />
+                  <div className="bg-green-600/20 border border-green-600/30 rounded-full p-4 w-fit mx-auto mb-5">
+                    <MessageCircle className="w-10 h-10 text-green-500" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-3">Welcome to Shadow Striker United!</h3>
+                  <h3 className="text-2xl font-bold text-white mb-3">WhatsApp Opened!</h3>
                   <p className="text-gray-400 max-w-sm mx-auto mb-2">
-                    Your <span className="text-red-500 font-semibold">{selectedPlan}</span> membership application has been received.
+                    Your <span className="text-red-500 font-semibold">{selectedPlan}</span> membership application has been prepared.
                   </p>
-                  <p className="text-gray-500 text-sm">Our team will contact you within 24 hours to complete your enrollment.</p>
+                  <p className="text-gray-500 text-sm mb-4">
+                    Please check WhatsApp and send the message to complete your registration.
+                  </p>
+                  <div className="bg-green-600/10 border border-green-600/30 rounded-lg p-3 mb-6">
+                    <p className="text-green-500 text-xs">💡 Tip: Click the send button on WhatsApp to notify our team</p>
+                  </div>
                   <button
-                    onClick={() => { setSubmitted(false); setShowForm(false); }}
-                    className="mt-8 text-red-500 text-sm font-medium hover:text-red-400 transition-colors"
+                    onClick={() => { setSubmitted(false); setShowForm(false); setFormData({ name: '', email: '', phone: '', sport: '', age: '', plan: 'Elite' }); }}
+                    className="text-red-500 text-sm font-medium hover:text-red-400 transition-colors"
                   >
-                    Back to plans
+                    ← Back to plans
                   </button>
                 </div>
               ) : (
@@ -204,6 +250,14 @@ export default function JoinSection() {
                         Selected plan: <span className="text-red-500 font-semibold">{selectedPlan}</span>
                       </p>
                     </div>
+                  </div>
+
+                  {/* WhatsApp Info Banner */}
+                  <div className="mb-6 p-3 bg-green-600/10 border border-green-600/30 rounded-lg flex items-center gap-3">
+                    <MessageCircle className="w-5 h-5 text-green-500 shrink-0" />
+                    <p className="text-gray-300 text-xs">
+                      <span className="text-green-500 font-semibold">WhatsApp Registration:</span> Fill this form and it will open WhatsApp with your registration details pre-filled
+                    </p>
                   </div>
 
                   <form onSubmit={handleSubmit} className="space-y-5">
@@ -242,7 +296,7 @@ export default function JoinSection() {
                           required
                           value={formData.phone}
                           onChange={handleChange}
-                          placeholder="+1 (000) 000-0000"
+                          placeholder="+91 9540879700"
                           className="w-full bg-black border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-red-500 transition-colors"
                         />
                       </div>
@@ -285,7 +339,7 @@ export default function JoinSection() {
                           className="w-full bg-black border border-gray-700 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-red-500 transition-colors appearance-none"
                         >
                           {plans.map((p) => (
-                            <option key={p.name} value={p.name} className="bg-black">{p.name} — ₹{p.price}/mo</option>
+                            <option key={p.name} value={p.name} className="bg-black">{p.name} — ₹{p.price}/{p.period === 'month' ? 'month' : p.period}</option>
                           ))}
                         </select>
                       </div>
@@ -294,12 +348,13 @@ export default function JoinSection() {
                     {/* Trust badges */}
                     <div className="flex flex-wrap items-center gap-4 py-3 border-t border-gray-800">
                       {[
-                        { icon: Shield, text: 'Secure Enrollment' },
+                        { icon: Shield, text: 'Secure Registration' },
                         { icon: Users, text: 'No Hidden Fees' },
                         { icon: CheckCircle, text: 'Cancel Anytime' },
+                        { icon: MessageCircle, text: 'WhatsApp Confirmation' },
                       ].map(({ icon: Icon, text }) => (
                         <div key={text} className="flex items-center gap-1.5 text-gray-500 text-xs">
-                          <Icon className="w-3.5 h-3.5 text-red-500" />
+                          <Icon className="w-3.5 h-3.5 text-green-500" />
                           {text}
                         </div>
                       ))}
@@ -308,17 +363,17 @@ export default function JoinSection() {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full bg-red-600 hover:bg-red-700 disabled:opacity-60 text-white font-semibold py-3.5 rounded-lg flex items-center justify-center gap-2 transition-colors duration-200"
+                      className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white font-semibold py-3.5 rounded-lg flex items-center justify-center gap-2 transition-colors duration-200"
                     >
                       {loading ? (
                         <>
                           <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          Processing...
+                          Opening WhatsApp...
                         </>
                       ) : (
                         <>
-                          <Zap className="w-4 h-4" />
-                          Complete Registration
+                          <MessageCircle className="w-4 h-4" />
+                          Register via WhatsApp
                         </>
                       )}
                     </button>
@@ -332,3 +387,6 @@ export default function JoinSection() {
     </section>
   );
 }
+
+
+

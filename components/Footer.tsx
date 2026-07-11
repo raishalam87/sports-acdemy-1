@@ -7,6 +7,7 @@ const footerLinks = {
     { label: 'Basketball Camp', href: '#programs' },
     { label: 'Taekwondo Classes', href: '#programs' },
     { label: 'Cross-Training', href: '#programs' },
+    { label: 'Skating Academy', href: '#programs' },
   ],
   Company: [
     { label: 'About Us', href: '#about' },
@@ -25,17 +26,17 @@ const footerLinks = {
 };
 
 const socials = [
-  { icon: Twitter, label: 'Twitter', href: '#' },
-  { icon: Instagram, label: 'Instagram', href: '#' },
-  { icon: Facebook, label: 'Facebook', href: '#' },
-  { icon: Youtube, label: 'YouTube', href: '#' },
-  { icon: Linkedin, label: 'LinkedIn', href: '#' },
+  { icon: Twitter, label: 'Twitter', href: 'https://twitter.com/shadowstrikers' },
+  { icon: Instagram, label: 'Instagram', href: 'https://www.instagram.com/shadowstrikersunited' },
+  { icon: Facebook, label: 'Facebook', href: 'https://facebook.com/shadowstrikersunited' },
+  { icon: Youtube, label: 'YouTube', href: 'https://youtube.com/@shadowstrikersunited' },
+  { icon: Linkedin, label: 'LinkedIn', href: 'https://linkedin.com/company/shadowstrikersunited' },
 ];
 
 const stats = [
   { value: '15+', label: 'Years of Excellence' },
   { value: '20K+', label: 'Athletes Trained' },
-  { value: '4', label: 'Sport Disciplines' },
+  { value: '5', label: 'Sport Disciplines' },
   { value: '98%', label: 'Satisfaction Rate' },
 ];
 
@@ -76,7 +77,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
-              Elite coaching, performance analytics, and 360° training programs across Cricket, Football, Basketball & Taekwondo. Building champions since 2009.
+              Elite coaching, performance analytics, and 360° training programs across Cricket, Football, Basketball, Taekwondo & Skating. Building champions since 2009.
             </p>
 
             {/* Social links */}
@@ -85,6 +86,8 @@ export default function Footer() {
                 <a
                   key={label}
                   href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={label}
                   className="w-9 h-9 bg-gray-900 hover:bg-red-600 border border-gray-800 hover:border-red-600 rounded-lg flex items-center justify-center transition-all duration-200 group"
                 >
@@ -141,7 +144,7 @@ export default function Footer() {
       <div className="border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-gray-600 text-sm">
-            &copy; {new Date().getFullYear()} Shadow Strikers United. All rights reserved.
+            &copy; {new Date().getFullYear()} Shadow Strikers United. All rights reserved. WEBSITE DEVELOP & DESIGN BY RAISHDESIGNLAB
           </p>
           <div className="flex items-center gap-5">
             {['Privacy Policy', 'Terms of Service', 'Cookies'].map((item) => (
