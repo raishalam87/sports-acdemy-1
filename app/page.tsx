@@ -62,12 +62,12 @@ function HeroSection() {
           className="w-full h-full object-cover"
         >
           <source
-            src="bg.mp4.mp4"
+            src="/videos/bg.mp4"
             type="video/mp4"
           />
           {/* Fallback image if video doesn't load */}
           <img
-            src="https://images.pexels.com/photos/3657154/pexels-photo-3657154.jpeg?auto=compress&cs=tinysrgb&w=600"
+            src="/videos/bg.mp4"
             alt="Sports background"
             className="w-full h-full object-cover"
           />
